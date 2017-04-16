@@ -10,12 +10,8 @@ run;
 data PredOut;
 set SS_PRED;
 where shot_made_flag=.;
-keep shot_made_flag I;
+keep Shot_id I;
+rename shot_made_flag=shot_made_flag
+I=shot_made_flag;
 run;
 
-
-data Pred;
-set PredOut;
-if I >=0.5 then Pred_Shot=1;
-if I < 0.5 then Pred_Shot=0;
-run;
