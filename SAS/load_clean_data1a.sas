@@ -1,4 +1,5 @@
 
+
 /* This file creates 4 data sets, kobedata: raw data, kobe1: cleaned and transformed data, kobe_train: no shot_made_flag NAs in kobe1, kobe_test: only shot_made_flag NAs. */
 /* This file is meant to be run first then other analysis files can be run after it, such as EDA.sas, CV.sas, prediction.sas, or Kaggle_Submission.sas. */
 /* Make sure to change the directory for to data.csv file. */
@@ -87,10 +88,14 @@ shot_id
 *proc print data=kobedata (obs=20); run;
 
 data Kobe1;                                                                                                                              
-set KobeData;  
+set KobeData;
+
+latneg=(-1)*lat;
+
 match = substr(Matchup,5,2); 
 if (match = 'vs') then HomeField = 1;                                                                                               
 if (match = '@') then HomeField = 0;
+
 if season = '1996-97' then ssn_numb = 1;
 if season = '1997-98' then ssn_numb = 2;
 if season = '1998-99' then ssn_numb = 3;
@@ -109,6 +114,7 @@ if season = '2012-13' then ssn_numb = 15;
 if season = '2013-14' then ssn_numb = 16;
 if season = '2014-15' then ssn_numb = 17;
 if season = '2015-16' then ssn_numb = 18;
+
 if period = 1 then ttl_sec_remn_gam = (36*60 + minutes_remaining*60+seconds_remaining);
 if period = 2 then ttl_sec_remn_gam = (24*60 + minutes_remaining*60+seconds_remaining);
 if period = 3 then ttl_sec_remn_gam = (12*60 + minutes_remaining*60+seconds_remaining);
@@ -116,8 +122,37 @@ if period = 4 then ttl_sec_remn_gam = (minutes_remaining*60 + seconds_remaining)
 if period = 5 then ttl_sec_remn_gam = (minutes_remaining*60 + seconds_remaining);
 if period = 6 then ttl_sec_remn_gam = (minutes_remaining*60 + seconds_remaining);
 if period = 7 then ttl_sec_remn_gam = (minutes_remaining*60 + seconds_remaining);
-if shot_type = '2PT Field Goal' then shot_type = '2';
-if shot_type = '3PT Field Goal' then shot_type = '3';
+
+if shot_type = '2PT Field Goal' then shot_type_num = 2;
+if shot_type = '3PT Field Goal' then shot_type_num = 3;
+
+if combined_shot_type = 'Bank Shot' then combined_shot_type_num = 1;
+if combined_shot_type = 'Dunk' then combined_shot_type_num = 2;
+if combined_shot_type = 'Hook Shot' then combined_shot_type_num = 3;
+if combined_shot_type = 'Jump Shot' then combined_shot_type_num = 4;
+if combined_shot_type = 'Layup' then combined_shot_type_num = 5;
+if combined_shot_type = 'Tip Shot' then combined_shot_type_num = 6;
+
+if shot_zone_area = 'Back Court(BC)' then shot_zone_area_num = 1;
+if shot_zone_area = 'Center(C)' then shot_zone_area_num = 2;
+if shot_zone_area = 'Left Side Center(LC)' then shot_zone_area_num = 3;
+if shot_zone_area = 'Left Side(L)' then shot_zone_area_num = 4;
+if shot_zone_area = 'Right Side Center(RC)' then shot_zone_area_num = 5;
+if shot_zone_area = 'Right Side(R)' then shot_zone_area_num = 6;
+
+if shot_zone_basic = 'Above the Break 3' then shot_zone_basic_num = 1;
+if shot_zone_basic = 'Backcourt' then shot_zone_basic_num = 2;
+if shot_zone_basic = 'In The Paint (Non-RA)' then shot_zone_basic_num = 3;
+if shot_zone_basic = 'Left Corner 3' then shot_zone_basic_num = 4;
+if shot_zone_basic = 'Mid-Range' then shot_zone_basic_num = 5;
+if shot_zone_basic = 'Restricted Area' then shot_zone_basic_num = 6;
+if shot_zone_basic = 'Right Corner 3' then shot_zone_basic_num = 7;
+
+if shot_zone_range = '16-24 ft.' then shot_zone_range_num = 1;
+if shot_zone_range = '24+ ft.' then shot_zone_range_num = 2;
+if shot_zone_range = '8-16 ft.' then shot_zone_range_num = 3;
+if shot_zone_range = 'Back Court Shot' then shot_zone_range_num = 4;
+if shot_zone_range = 'Less Than 8 ft.' then shot_zone_range_num = 5;
 run;
 
 *proc print data=kobe1 (obs=20); run;
@@ -131,3 +166,5 @@ data Kobe_test;
  set Kobe1;
  if shot_made_flag^=. then delete;
 run;
+
+
