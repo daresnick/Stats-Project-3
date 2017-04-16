@@ -31,3 +31,13 @@ title 'shot_zone_range';
 proc sgplot data = kobe_train;
 	scatter x = polar_x y = polar_y / colorresponse=shot_zone_range_num  markerattrs=(size = 3 symbol = circlefilled);
 run;
+
+title 'Shows that dist and shot_distance are nominaly the same.';
+proc sgplot data = kobe_train;
+	scatter x = dist y = shot_distance / colorresponse=shot_zone_range_num  markerattrs=(size = 3 symbol = circlefilled);
+run;
+
+title '2 Point and 3 Point Shots';
+proc sgplot data = kobe_train;
+	scatter x = loc_x y = loc_y / colorresponse=shot_type_num  markerattrs=(size = 3 symbol = circlefilled);
+run;
