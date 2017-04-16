@@ -26,3 +26,8 @@ title 'shot_zone_range';
 proc sgplot data = kobe_train;
 	scatter x = loc_x y = loc_y / colorresponse=shot_zone_range_num  markerattrs=(size = 3 symbol = circlefilled);
 run;
+
+title 'shot_zone_range';
+proc sgplot data = kobe_train;
+	scatter x = polar_x y = polar_y / colorresponse=shot_zone_range_num  markerattrs=(size = 3 symbol = circlefilled);
+run;
