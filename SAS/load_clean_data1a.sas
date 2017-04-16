@@ -1,8 +1,7 @@
 
-
-/* This file creates 4 data sets, kobedata: raw data, kobe1: cleaned and transformed data, kobe_train: no shot_made_flag NAs in kobe1, kobe_test: only shot_made_flag NAs. */
+/* This file creates 4 data sets, kobedata: raw data, kobe1: cleaned and transformed data, kobe_train: shot_made_flag NA rows removed from kobe1, kobe_test: only NA shot_made_flag. */
 /* This file is meant to be run first then other analysis files can be run after it, such as EDA.sas, CV.sas, prediction.sas, or Kaggle_Submission.sas. */
-/* Make sure to change the directory for to data.csv file. */
+/* Make sure to change the directory for the data.csv file. */
 
 data WORK.KOBEDATA    ;
 infile 'C:\Users\hp\Desktop\SMU\Exp Stats II\Homework and projects\Project 3\data.csv' delimiter = ',' MISSOVER DSD lrecl=32767 firstobs=2 ;
@@ -105,15 +104,17 @@ if season = '2001-02' then ssn_numb = 6;
 if season = '2002-03' then ssn_numb = 7;
 if season = '2003-04' then ssn_numb = 8;
 if season = '2004-05' then ssn_numb = 9;
-if season = '2006-07' then ssn_numb = 10;
-if season = '2007-08' then ssn_numb = 11;
-if season = '2009-10' then ssn_numb = 12;
-if season = '2010-11' then ssn_numb = 13;
-if season = '2011-12' then ssn_numb = 14;
-if season = '2012-13' then ssn_numb = 15;
-if season = '2013-14' then ssn_numb = 16;
-if season = '2014-15' then ssn_numb = 17;
-if season = '2015-16' then ssn_numb = 18;
+if season = '2005-06' then ssn_numb = 10;
+if season = '2006-07' then ssn_numb = 11;
+if season = '2007-08' then ssn_numb = 12;
+if season = '2008-09' then ssn_numb = 13;
+if season = '2009-10' then ssn_numb = 14;
+if season = '2010-11' then ssn_numb = 15;
+if season = '2011-12' then ssn_numb = 16;
+if season = '2012-13' then ssn_numb = 17;
+if season = '2013-14' then ssn_numb = 18;
+if season = '2014-15' then ssn_numb = 19;
+if season = '2015-16' then ssn_numb = 20;
 
 if period = 1 then ttl_sec_remn_gam = (36*60 + minutes_remaining*60+seconds_remaining);
 if period = 2 then ttl_sec_remn_gam = (24*60 + minutes_remaining*60+seconds_remaining);
@@ -153,6 +154,16 @@ if shot_zone_range = '24+ ft.' then shot_zone_range_num = 2;
 if shot_zone_range = '8-16 ft.' then shot_zone_range_num = 3;
 if shot_zone_range = 'Back Court Shot' then shot_zone_range_num = 4;
 if shot_zone_range = 'Less Than 8 ft.' then shot_zone_range_num = 5;
+
+dist = sqrt((loc_x)*(loc_x)+(loc_y)*(loc_y));
+pi = constant("pi");
+if loc_x = 0 and loc_y >= 0 then angle = pi/2;
+if loc_x = 0 and loc_y < 0 then angle = (pi/2 + pi);
+if loc_x ^= 0 then angle = atan2(loc_y,loc_x);
+
+polar_x = dist*cos(angle);
+polar_y = dist*sin(angle);
+
 run;
 
 *proc print data=kobe1 (obs=20); run;
@@ -166,5 +177,4 @@ data Kobe_test;
  set Kobe1;
  if shot_made_flag^=. then delete;
 run;
-
 
