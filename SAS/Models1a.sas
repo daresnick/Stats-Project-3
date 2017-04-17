@@ -5,7 +5,7 @@
 /* You can copy and paste models in and out of this file into Kaggle submission or Cross Validation files. */
 
 
-/* Log Loss score of 0.59118 */
+/* Kaggle score of 0.63627 Log Loss Score 0f 0.59118 with 3 missing rows replaced with 0.5*/
 proc logistic data=kobe2 plots=all;
 class action_type combined_shot_type_num ssn_numb shot_zone_area_num shot_zone_basic_num shot_zone_range_num game_event_id;    
 model shot_made_flag(event='1') =  dist action_type combined_shot_type_num shot_type_num ttl_sec_remn_gam ssn_numb shot_zone_area_num 
