@@ -49,7 +49,6 @@ run; quit;
 /* the predictions for test2 data */
 data finalprediction2;
 set predictions;
-if RandNumber <= 1/2;
 logloss = (-1)*(shot_made_flag*log(I) + (1 - shot_made_flag)*log(1 - I));
 keep RandNumber shot_id I logloss;
 run;
