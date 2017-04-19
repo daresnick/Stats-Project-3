@@ -164,6 +164,14 @@ if loc_x ^= 0 then angle = atan2(loc_y,loc_x);
 polar_x = dist*cos(angle);
 polar_y = dist*sin(angle);
 
+if period = 1 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 2 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 3 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 4 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 5 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 6 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+if period = 7 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+
 run;
 
 *proc print data=kobe1 (obs=20); run;
