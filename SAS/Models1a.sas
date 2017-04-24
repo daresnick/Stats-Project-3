@@ -4,6 +4,16 @@
 
 /* You can copy and paste models in and out of this file into Kaggle submission or Cross Validation files. */
 
+/* Kaggle score of 0.63499 and Log Loss Score 0f 0.58712 with 3 missing rows replaced with those of clean model */
+proc logistic data=kobe1 plots=all;
+class ssn_numb  combined_shot_type_num  shot_distance;    
+class action_type  ssn_numb  combined_shot_type_num  shot_zone_area_num  shot_zone_basic_num 
+shot_zone_range_num  game_event_id  shot_distance  clutch ;    
+model shot_made_flag(event='1') = action_type  ttl_sec_remn_gam  ssn_numb combined_shot_type_num 
+shot_zone_area_num  shot_zone_basic_num  shot_zone_range_num  game_event_id  shot_distance  clutch ;
+output out = SS_PRED predicted = I;    
+run;
+
 /*Kaggle Score of 0.63544 and Log Loss Score 0f 0.58776 with 3 missing rows replaced with 0.5*/
 ods exclude all;
 proc logistic data=kobe1 plots=all;
@@ -16,7 +26,6 @@ run; quit;
 ods exclude none; 
 
 /* Kaggle score of 0.63562 and Log Loss Score 0f 0.58778 with 3 missing rows replaced with 0.5*/
-
 ods exclude all;
 proc logistic data=Kobe1 plots=all;
 class action_type ssn_numb combined_shot_type_num shot_zone_area_num shot_zone_basic_num 
