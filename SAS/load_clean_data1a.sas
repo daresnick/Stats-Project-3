@@ -161,20 +161,92 @@ if loc_x = 0 and loc_y >= 0 then angle = pi/2;
 if loc_x = 0 and loc_y < 0 then angle = (pi/2 + pi);
 if loc_x ^= 0 then angle = atan2(loc_y,loc_x);
 
+
 polar_x = dist*cos(angle);
 polar_y = dist*sin(angle);
 
-if period = 1 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 2 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 3 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 4 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 5 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 6 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
-if period = 7 then ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+ttl_sec_remn_per = (minutes_remaining*60+seconds_remaining);
+
+if ttl_sec_remn_per > 30 then clutch = 0;
+if ttl_sec_remn_per <= 30 then clutch = 1;
+
+if ttl_sec_remn_per > 10 then realclutch = 0;
+if ttl_sec_remn_per <= 10 then realclutch = 1;
+
+if ttl_sec_remn_gam > 30 then clutchgame = 0;
+if ttl_sec_remn_gam <= 30 then clutchgame = 1;
+
+if ttl_sec_remn_gam > 10 then realclutchgame = 0;
+if ttl_sec_remn_gam <= 10 then realclutchgame = 1;
+
+if game_id < 23700000 then game_id_bin = 1;
+if game_id > 23700000 and game_id < 38100000 then game_id_bin = 2;
+if game_id > 38100000 and game_id < 45300000 then game_id_bin =3;
+if game_id > 45300000 then game_id_bin = 4;
+
+if dist < 300 then dist_easy = 0;
+if dist > 300 then dist_easy = 1;
+
+if shot_distance < 30 then shot_distance_easy = shot_distance;
+if shot_distance > 30 then shot_distance_easy = 0;
+
+logdist = log(dist+1);
+log_shot_distance = log(shot_distance+1);
+
+days = sum(game_date,-(1996-11-03));
+
+days_1 = days - 11474;
 
 run;
 
-*proc print data=kobe1 (obs=20); run;
+
+proc sort data=kobe1;
+by game_date;
+run;
+
+*proc print data=kobe1 (obs=100); run;
+
+/* Code below goal is to make a column of the number of days between games!*/
+data kobegone;
+set kobe1;
+if days_1 = 0 then delete;
+keep days_1;
+run;
+
+*proc print data=kobegone (obs=100); run;
+
+data kobelast;
+input days_1;
+datalines;
+7101
+;
+run;
+*proc print data=kobelast (obs=50); run;
+
+data kobegone2;
+set kobegone kobelast;
+days_2=days_1;
+keep days_2;
+run;
+
+*proc print data=kobegone2 (obs=50); run;
+
+data kobe1;
+set kobe1;
+set kobegone2;
+
+days_diff = days_2-days_1;
+
+if days_diff >= 8 then days_diffcut=0.5;
+if days_diff < 8 then days_diffcut=days_diff;
+run;
+
+*proc print data=kobe1 (obs=50); run;
+
+proc sort data = kobe1;
+by shot_id;
+run;
+
 
 data Kobe_train;
  set Kobe1;
@@ -186,3 +258,22 @@ data Kobe_test;
  if shot_made_flag^=. then delete;
 run;
 
+
+/*
+data kobe_missing_values;
+set kobe_test;
+if shot_id ^= 19409 and shot_id ^= 21467 and shot_id ^= 22624 then delete;
+run;
+*/
+
+*proc print data = kobe_missing_values; run;
+
+/*
+proc prinqual data=kobe_train out=prinq1a replace converge=1e-10 maxiter=200;
+	transform 
+			monotone (days days_1);
+	run; quit;
+
+proc print data=prinq1a (obs=40); run;
+
+*/
